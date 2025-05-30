@@ -190,6 +190,18 @@
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
             }
 
             .hero h1 {
@@ -207,6 +219,7 @@
             border: none;
             font-size: 1.5rem;
             color: var(--dark);
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -270,7 +283,7 @@
                 <a href="#tools" class="nav-link">Tools</a>
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
-                <a href="#login" class="btn btn-primary">Get Started</a>
+                <a href="#" class="btn btn-primary">Get Started</a>
             </div>
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
@@ -291,37 +304,42 @@
         </div>
     </section>
 
-    <div class="tools-container">
+    <div class="tools-container" id="tools">
         <h2 class="section-title">Popular Tools</h2>
-       <a href="/img-compress.html" style="text-decoration: none; color: inherit;">
-    <div class="tool-card">
-        <div class="tool-icon">
-            <i class="fas fa-compress-arrows-alt"></i>
-        </div>
-        <h3>Image Compressor</h3>
-        <p>Reduce image size without quality loss</p>
-            </div>
-           </a>
-
-
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <i class="fas fa-file-pdf"></i>
+        <div class="tools-grid">
+            <a href="/tool/img-compress.html" style="text-decoration: none; color: inherit;">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                    </div>
+                    <h3>Image Compressor</h3>
+                    <p>Reduce image size without quality loss</p>
                 </div>
-                <h3>PDF Converter</h3>
-                <p>Convert PDFs to various formats</p>
-            </div>
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <i class="fas fa-crop-alt"></i>
+            </a>
+
+            <a href="/pdf-converter.html" style="text-decoration: none; color: inherit;">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>PDF Converter</h3>
+                    <p>Convert PDFs to various formats</p>
                 </div>
-                <h3>Image Resizer</h3>
-                <p>Resize images to exact dimensions</p>
-            </div>
+            </a>
+
+            <a href="/image-resizer.html" style="text-decoration: none; color: inherit;">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-crop-alt"></i>
+                    </div>
+                    <h3>Image Resizer</h3>
+                    <p>Resize images to exact dimensions</p>
+                </div>
+            </a>
         </div>
     </div>
 
-    <section class="features">
+    <section class="features" id="features">
         <div class="tools-container">
             <h2 class="section-title">Why Choose Us?</h2>
             <div class="feature-grid">
@@ -353,17 +371,17 @@
             <div>
                 <h4>Tools</h4>
                 <ul>
-                    <li><a href="#image-tools">Image Tools</a></li>
-                    <li><a href="#pdf-tools">PDF Tools</a></li>
-                    <li><a href="#video-tools">Video Tools</a></li>
+                    <li><a href="#tools">Image Tools</a></li>
+                    <li><a href="#tools">PDF Tools</a></li>
+                    <li><a href="#tools">Video Tools</a></li>
                 </ul>
             </div>
             <div>
                 <h4>Support</h4>
                 <ul>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="#docs">Documentation</a></li>
-                    <li><a href="#status">Status</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Status</a></li>
                 </ul>
             </div>
         </div>
@@ -375,16 +393,29 @@
         const navLinks = document.querySelector('.nav-links');
 
         menuBtn.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            navLinks.classList.toggle('active');
         });
 
-        // Smooth scroll
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                // Don't prevent default if it's a # link without actual ID
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu if open
+                        if (navLinks.classList.contains('active')) {
+                            navLinks.classList.remove('active');
+                        }
+                    }
+                }
             });
         });
 
