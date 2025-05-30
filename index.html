@@ -186,6 +186,141 @@
             gap: 2rem;
         }
 
+        /* Tool Containers */
+        .tool-section {
+            display: none;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        .tool-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tool-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            background: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .file-drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .file-drop-area.active {
+            border-color: var(--primary);
+            background-color: #f0f4ff;
+        }
+
+        /* PDF Converter Styles */
+        .format-options {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .format-option {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .format-option:hover, .format-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Image Resizer Styles */
+        .resize-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .option-group {
+            margin-bottom: 1rem;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .option-group input, .option-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        
+        .preview-container {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* Image Compressor Styles */
+        .compression-options {
+            margin: 1rem 0;
+        }
+
+        .quality-slider {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-links {
@@ -210,6 +345,15 @@
 
             .tool-card {
                 padding: 1.5rem;
+            }
+
+            .resize-options {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-tabs {
+                flex-direction: column;
+                align-items: center;
             }
         }
 
@@ -307,7 +451,7 @@
     <div class="tools-container" id="tools">
         <h2 class="section-title">Popular Tools</h2>
         <div class="tools-grid">
-            <a href="/tool/img-compress.html" style="text-decoration: none; color: inherit;">
+            <a href="#image-compressor-tool" style="text-decoration: none; color: inherit;">
                 <div class="tool-card">
                     <div class="tool-icon">
                         <i class="fas fa-compress-arrows-alt"></i>
@@ -317,7 +461,7 @@
                 </div>
             </a>
 
-            <a href="/tool/pdf-converter.html" style="text-decoration: none; color: inherit;">
+            <a href="#pdf-converter-tool" style="text-decoration: none; color: inherit;">
                 <div class="tool-card">
                     <div class="tool-icon">
                         <i class="fas fa-file-pdf"></i>
@@ -327,7 +471,7 @@
                 </div>
             </a>
 
-            <a href="/tool/image-resizer.html" style="text-decoration: none; color: inherit;">
+            <a href="#image-resizer-tool" style="text-decoration: none; color: inherit;">
                 <div class="tool-card">
                     <div class="tool-icon">
                         <i class="fas fa-crop-alt"></i>
@@ -337,6 +481,142 @@
                 </div>
             </a>
         </div>
+    </div>
+
+    <!-- Image Compressor Tool -->
+    <div class="tool-section" id="image-compressor-tool">
+        <div class="tool-tabs">
+            <div class="tool-tab active" onclick="showTool('image-compressor')">Image Compressor</div>
+            <div class="tool-tab" onclick="showTool('pdf-converter')">PDF Converter</div>
+            <div class="tool-tab" onclick="showTool('image-resizer')">Image Resizer</div>
+        </div>
+        
+        <h2 class="section-title">Image Compressor</h2>
+        <div class="file-drop-area" id="compress-drop-area">
+            <i class="fas fa-image fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3>Drag & Drop Image Here</h3>
+            <p>or</p>
+            <input type="file" id="compress-file-input" accept="image/*" style="display: none;">
+            <button class="btn btn-primary" onclick="document.getElementById('compress-file-input').click()">
+                <i class="fas fa-folder-open"></i> Select Image
+            </button>
+        </div>
+        
+        <div class="compression-options">
+            <label for="compress-quality">Compression Quality</label>
+            <input type="range" id="compress-quality" min="1" max="100" value="80" class="quality-slider">
+            <span id="compress-quality-value">80%</span>
+            
+            <div style="margin-top: 1rem;">
+                <label>
+                    <input type="checkbox" id="keep-metadata"> Keep image metadata
+                </label>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <img id="compress-preview-image" class="preview-image" alt="Preview">
+            <div id="compress-file-info" style="margin-top: 1rem;"></div>
+        </div>
+        
+        <button class="btn btn-primary" id="compress-btn" style="width: 100%; margin-top: 1rem;" disabled>
+            <i class="fas fa-compress-arrows-alt"></i> Compress Image
+        </button>
+        
+        <div id="compress-result" style="margin-top: 2rem; text-align: center;"></div>
+    </div>
+
+    <!-- PDF Converter Tool -->
+    <div class="tool-section" id="pdf-converter-tool">
+        <div class="tool-tabs">
+            <div class="tool-tab" onclick="showTool('image-compressor')">Image Compressor</div>
+            <div class="tool-tab active" onclick="showTool('pdf-converter')">PDF Converter</div>
+            <div class="tool-tab" onclick="showTool('image-resizer')">Image Resizer</div>
+        </div>
+        
+        <h2 class="section-title">PDF Converter</h2>
+        <div class="file-drop-area" id="pdf-drop-area">
+            <i class="fas fa-file-pdf fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3>Drag & Drop PDF File Here</h3>
+            <p>or</p>
+            <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+            <button class="btn btn-primary" onclick="document.getElementById('pdf-file-input').click()">
+                <i class="fas fa-folder-open"></i> Select File
+            </button>
+        </div>
+        
+        <h3>Convert To:</h3>
+        <div class="format-options">
+            <div class="format-option active" data-format="docx">Word (.docx)</div>
+            <div class="format-option" data-format="jpg">Image (.jpg)</div>
+            <div class="format-option" data-format="png">Image (.png)</div>
+            <div class="format-option" data-format="txt">Text (.txt)</div>
+        </div>
+        
+        <div class="progress-bar" id="pdf-progress-bar">
+            <div class="progress" id="pdf-progress"></div>
+        </div>
+        
+        <button class="btn btn-primary" id="convert-btn" style="width: 100%; margin-top: 1rem;" disabled>
+            <i class="fas fa-sync-alt"></i> Convert File
+        </button>
+        
+        <div id="pdf-result" style="margin-top: 2rem; text-align: center;"></div>
+    </div>
+
+    <!-- Image Resizer Tool -->
+    <div class="tool-section" id="image-resizer-tool">
+        <div class="tool-tabs">
+            <div class="tool-tab" onclick="showTool('image-compressor')">Image Compressor</div>
+            <div class="tool-tab" onclick="showTool('pdf-converter')">PDF Converter</div>
+            <div class="tool-tab active" onclick="showTool('image-resizer')">Image Resizer</div>
+        </div>
+        
+        <h2 class="section-title">Image Resizer</h2>
+        <div class="file-drop-area" id="resize-drop-area">
+            <i class="fas fa-image fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3>Drag & Drop Image Here</h3>
+            <p>or</p>
+            <input type="file" id="resize-file-input" accept="image/*" style="display: none;">
+            <button class="btn btn-primary" onclick="document.getElementById('resize-file-input').click()">
+                <i class="fas fa-folder-open"></i> Select Image
+            </button>
+        </div>
+        
+        <div class="resize-options">
+            <div class="option-group">
+                <label for="resize-width">Width (px)</label>
+                <input type="number" id="resize-width" placeholder="Auto">
+            </div>
+            <div class="option-group">
+                <label for="resize-height">Height (px)</label>
+                <input type="number" id="resize-height" placeholder="Auto">
+            </div>
+            <div class="option-group">
+                <label for="resize-format">Output Format</label>
+                <select id="resize-format">
+                    <option value="original">Original Format</option>
+                    <option value="jpg">JPG</option>
+                    <option value="png">PNG</option>
+                    <option value="webp">WebP</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="resize-quality">Quality</label>
+                <input type="range" id="resize-quality" min="1" max="100" value="90">
+                <span id="resize-quality-value">90%</span>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <img id="resize-preview-image" class="preview-image" alt="Preview">
+        </div>
+        
+        <button class="btn btn-primary" id="resize-btn" style="width: 100%; margin-top: 1rem;" disabled>
+            <i class="fas fa-crop-alt"></i> Resize Image
+        </button>
+        
+        <div id="resize-result" style="margin-top: 2rem; text-align: center;"></div>
     </div>
 
     <section class="features" id="features">
@@ -371,9 +651,9 @@
             <div>
                 <h4>Tools</h4>
                 <ul>
-                    <li><a href="#tools">Image Tools</a></li>
-                    <li><a href="#tools">PDF Tools</a></li>
-                    <li><a href="#tools">Video Tools</a></li>
+                    <li><a href="#image-compressor-tool">Image Tools</a></li>
+                    <li><a href="#pdf-converter-tool">PDF Tools</a></li>
+                    <li><a href="#image-resizer-tool">Video Tools</a></li>
                 </ul>
             </div>
             <div>
@@ -399,7 +679,6 @@
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                // Don't prevent default if it's a # link without actual ID
                 if (this.getAttribute('href') !== '#') {
                     e.preventDefault();
                     const targetId = this.getAttribute('href');
@@ -410,9 +689,14 @@
                             behavior: 'smooth'
                         });
                         
-                        // Close mobile menu if open
                         if (navLinks.classList.contains('active')) {
                             navLinks.classList.remove('active');
+                        }
+
+                        // Handle tool section links
+                        if (targetId.includes('-tool')) {
+                            const toolId = targetId.replace('-tool', '').replace('#', '');
+                            showTool(toolId);
                         }
                     }
                 }
@@ -429,6 +713,468 @@
                 card.style.transform = 'translateY(0)';
             });
         });
+
+        // Tool Navigation
+        function showTool(toolId) {
+            // Hide all tool sections
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected tool
+            const toolSection = document.getElementById(`${toolId}-tool`);
+            toolSection.classList.add('active');
+            
+            // Update URL hash
+            window.location.hash = `${toolId}-tool`;
+            
+            // Scroll to tools
+            document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
+            
+            // Close mobile menu if open
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+            }
+            
+            // Update tab states
+            document.querySelectorAll('.tool-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate current tool tab
+            const activeTab = document.querySelector(`.tool-tab[onclick="showTool('${toolId}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+        }
+
+        // Initialize based on URL hash
+        window.addEventListener('load', function() {
+            if (window.location.hash) {
+                const hash = window.location.hash;
+                if (hash === '#image-compressor-tool') {
+                    showTool('image-compressor');
+                } else if (hash === '#pdf-converter-tool') {
+                    showTool('pdf-converter');
+                } else if (hash === '#image-resizer-tool') {
+                    showTool('image-resizer');
+                }
+            }
+        });
+
+        /* PDF Converter Logic */
+        const pdfDropArea = document.getElementById('pdf-drop-area');
+        const pdfFileInput = document.getElementById('pdf-file-input');
+        const pdfFormatOptions = document.querySelectorAll('#pdf-converter-tool .format-option');
+        const pdfConvertBtn = document.getElementById('convert-btn');
+        const pdfProgressBar = document.getElementById('pdf-progress-bar');
+        const pdfProgress = document.getElementById('pdf-progress');
+        const pdfResultDiv = document.getElementById('pdf-result');
+        
+        let pdfSelectedFile = null;
+        let pdfSelectedFormat = 'docx';
+        
+        // Handle format selection
+        pdfFormatOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                pdfFormatOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                pdfSelectedFormat = option.dataset.format;
+            });
+        });
+        
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            pdfDropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            pdfDropArea.addEventListener(eventName, highlightPdf, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            pdfDropArea.addEventListener(eventName, unhighlightPdf, false);
+        });
+        
+        function highlightPdf() {
+            pdfDropArea.classList.add('active');
+        }
+        
+        function unhighlightPdf() {
+            pdfDropArea.classList.remove('active');
+        }
+        
+        pdfDropArea.addEventListener('drop', handlePdfDrop, false);
+        pdfFileInput.addEventListener('change', handlePdfFiles, false);
+        
+        function handlePdfDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handlePdfFiles({ target: { files } });
+        }
+        
+        function handlePdfFiles(e) {
+            const files = e.target.files;
+            if (files.length) {
+                pdfSelectedFile = files[0];
+                if (pdfSelectedFile.type === 'application/pdf') {
+                    pdfDropArea.innerHTML = `
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--secondary); margin-bottom: 1rem;"></i>
+                        <h3>${pdfSelectedFile.name}</h3>
+                        <p>${(pdfSelectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <button class="btn" onclick="clearPdfSelection()" style="margin-top: 1rem;">
+                            <i class="fas fa-times"></i> Change File
+                        </button>
+                    `;
+                    pdfConvertBtn.disabled = false;
+                } else {
+                    alert('Please select a PDF file');
+                    clearPdfSelection();
+                }
+            }
+        }
+        
+        function clearPdfSelection() {
+            pdfSelectedFile = null;
+            pdfFileInput.value = '';
+            pdfDropArea.innerHTML = `
+                <i class="fas fa-file-pdf fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Drag & Drop PDF File Here</h3>
+                <p>or</p>
+                <button class="btn btn-primary" onclick="document.getElementById('pdf-file-input').click()">
+                    <i class="fas fa-folder-open"></i> Select File
+                </button>
+            `;
+            pdfConvertBtn.disabled = true;
+            pdfResultDiv.innerHTML = '';
+        }
+        
+        // Simulate conversion process
+        pdfConvertBtn.addEventListener('click', () => {
+            if (!pdfSelectedFile) return;
+            
+            pdfProgressBar.style.display = 'block';
+            pdfProgress.style.width = '0%';
+            pdfConvertBtn.disabled = true;
+            pdfConvertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            // Simulate processing
+            let progressValue = 0;
+            const interval = setInterval(() => {
+                progressValue += 5;
+                pdfProgress.style.width = `${progressValue}%`;
+                
+                if (progressValue >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        showPdfResult();
+                    }, 500);
+                }
+            }, 100);
+        });
+        
+        function showPdfResult() {
+            pdfProgressBar.style.display = 'none';
+            pdfConvertBtn.disabled = false;
+            pdfConvertBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Convert File';
+            
+            pdfResultDiv.innerHTML = `
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border: 1px solid #bbf7d0;">
+                    <i class="fas fa-check-circle fa-2x" style="color: var(--secondary);"></i>
+                    <h3>Conversion Complete!</h3>
+                    <p>Your PDF has been converted to ${pdfSelectedFormat.toUpperCase()}</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-download"></i> Download ${pdfSelectedFile.name.split('.')[0]}.${pdfSelectedFormat}
+                    </button>
+                </div>
+            `;
+        }
+
+        /* Image Resizer Logic */
+        const resizeDropArea = document.getElementById('resize-drop-area');
+        const resizeFileInput = document.getElementById('resize-file-input');
+        const resizePreviewImage = document.getElementById('resize-preview-image');
+        const resizeBtn = document.getElementById('resize-btn');
+        const resizeWidthInput = document.getElementById('resize-width');
+        const resizeHeightInput = document.getElementById('resize-height');
+        const resizeFormatSelect = document.getElementById('resize-format');
+        const resizeQualityInput = document.getElementById('resize-quality');
+        const resizeQualityValue = document.getElementById('resize-quality-value');
+        const resizeResultDiv = document.getElementById('resize-result');
+        
+        let resizeSelectedFile = null;
+        
+        // Handle quality slider
+        resizeQualityInput.addEventListener('input', () => {
+            resizeQualityValue.textContent = `${resizeQualityInput.value}%`;
+        });
+        
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            resizeDropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            resizeDropArea.addEventListener(eventName, highlightResize, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            resizeDropArea.addEventListener(eventName, unhighlightResize, false);
+        });
+        
+        function highlightResize() {
+            resizeDropArea.classList.add('active');
+        }
+        
+        function unhighlightResize() {
+            resizeDropArea.classList.remove('active');
+        }
+        
+        resizeDropArea.addEventListener('drop', handleResizeDrop, false);
+        resizeFileInput.addEventListener('change', handleResizeFiles, false);
+        
+        function handleResizeDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleResizeFiles({ target: { files } });
+        }
+        
+        function handleResizeFiles(e) {
+            const files = e.target.files;
+            if (files.length) {
+                resizeSelectedFile = files[0];
+                if (resizeSelectedFile.type.startsWith('image/')) {
+                    resizeDropArea.innerHTML = `
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--secondary); margin-bottom: 1rem;"></i>
+                        <h3>${resizeSelectedFile.name}</h3>
+                        <p>${(resizeSelectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <button class="btn" onclick="clearResizeSelection()" style="margin-top: 1rem;">
+                            <i class="fas fa-times"></i> Change Image
+                        </button>
+                    `;
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        resizePreviewImage.src = event.target.result;
+                        resizePreviewImage.style.display = 'block';
+                        
+                        // Set original dimensions
+                        resizePreviewImage.onload = () => {
+                            resizeWidthInput.placeholder = resizePreviewImage.naturalWidth;
+                            resizeHeightInput.placeholder = resizePreviewImage.naturalHeight;
+                        };
+                    };
+                    reader.readAsDataURL(resizeSelectedFile);
+                    
+                    resizeBtn.disabled = false;
+                } else {
+                    alert('Please select an image file');
+                    clearResizeSelection();
+                }
+            }
+        }
+        
+        function clearResizeSelection() {
+            resizeSelectedFile = null;
+            resizeFileInput.value = '';
+            resizePreviewImage.style.display = 'none';
+            resizeDropArea.innerHTML = `
+                <i class="fas fa-image fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Drag & Drop Image Here</h3>
+                <p>or</p>
+                <button class="btn btn-primary" onclick="document.getElementById('resize-file-input').click()">
+                    <i class="fas fa-folder-open"></i> Select Image
+                </button>
+            `;
+            resizeBtn.disabled = true;
+            resizeResultDiv.innerHTML = '';
+            resizeWidthInput.value = '';
+            resizeHeightInput.value = '';
+        }
+        
+        // Simulate resize process
+        resizeBtn.addEventListener('click', () => {
+            if (!resizeSelectedFile) return;
+            
+            resizeBtn.disabled = true;
+            resizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            setTimeout(() => {
+                showResizeResult();
+            }, 1500);
+        });
+        
+        function showResizeResult() {
+            resizeBtn.disabled = false;
+            resizeBtn.innerHTML = '<i class="fas fa-crop-alt"></i> Resize Image';
+            
+            const width = resizeWidthInput.value || resizeWidthInput.placeholder;
+            const height = resizeHeightInput.value || resizeHeightInput.placeholder;
+            const format = resizeFormatSelect.value === 'original' 
+                ? resizeSelectedFile.name.split('.').pop() 
+                : resizeFormatSelect.value;
+            const quality = resizeQualityInput.value;
+            
+            resizeResultDiv.innerHTML = `
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border: 1px solid #bbf7d0;">
+                    <i class="fas fa-check-circle fa-2x" style="color: var(--secondary);"></i>
+                    <h3>Resizing Complete!</h3>
+                    <p>New dimensions: ${width} × ${height} px</p>
+                    <p>Format: ${format.toUpperCase()}</p>
+                    <p>Quality: ${quality}%</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-download"></i> Download Resized Image
+                    </button>
+                </div>
+            `;
+        }
+
+        /* Image Compressor Logic */
+        const compressDropArea = document.getElementById('compress-drop-area');
+        const compressFileInput = document.getElementById('compress-file-input');
+        const compressPreviewImage = document.getElementById('compress-preview-image');
+        const compressBtn = document.getElementById('compress-btn');
+        const compressQualityInput = document.getElementById('compress-quality');
+        const compressQualityValue = document.getElementById('compress-quality-value');
+        const compressResultDiv = document.getElementById('compress-result');
+        const compressFileInfo = document.getElementById('compress-file-info');
+        
+        let compressSelectedFile = null;
+        
+        // Handle quality slider
+        compressQualityInput.addEventListener('input', () => {
+            compressQualityValue.textContent = `${compressQualityInput.value}%`;
+        });
+        
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            compressDropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            compressDropArea.addEventListener(eventName, highlightCompress, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            compressDropArea.addEventListener(eventName, unhighlightCompress, false);
+        });
+        
+        function highlightCompress() {
+            compressDropArea.classList.add('active');
+        }
+        
+        function unhighlightCompress() {
+            compressDropArea.classList.remove('active');
+        }
+        
+        compressDropArea.addEventListener('drop', handleCompressDrop, false);
+        compressFileInput.addEventListener('change', handleCompressFiles, false);
+        
+        function handleCompressDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleCompressFiles({ target: { files } });
+        }
+        
+        function handleCompressFiles(e) {
+            const files = e.target.files;
+            if (files.length) {
+                compressSelectedFile = files[0];
+                if (compressSelectedFile.type.startsWith('image/')) {
+                    compressDropArea.innerHTML = `
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--secondary); margin-bottom: 1rem;"></i>
+                        <h3>${compressSelectedFile.name}</h3>
+                        <p>${(compressSelectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <button class="btn" onclick="clearCompressSelection()" style="margin-top: 1rem;">
+                            <i class="fas fa-times"></i> Change Image
+                        </button>
+                    `;
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        compressPreviewImage.src = event.target.result;
+                        compressPreviewImage.style.display = 'block';
+                        
+                        // Show file info
+                        compressPreviewImage.onload = () => {
+                            compressFileInfo.innerHTML = `
+                                <p>Original Dimensions: ${compressPreviewImage.naturalWidth} × ${compressPreviewImage.naturalHeight} px</p>
+                                <p>Original Size: ${(compressSelectedFile.size / 1024).toFixed(2)} KB</p>
+                            `;
+                        };
+                    };
+                    reader.readAsDataURL(compressSelectedFile);
+                    
+                    compressBtn.disabled = false;
+                } else {
+                    alert('Please select an image file');
+                    clearCompressSelection();
+                }
+            }
+        }
+        
+        function clearCompressSelection() {
+            compressSelectedFile = null;
+            compressFileInput.value = '';
+            compressPreviewImage.style.display = 'none';
+            compressDropArea.innerHTML = `
+                <i class="fas fa-image fa-3x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Drag & Drop Image Here</h3>
+                <p>or</p>
+                <button class="btn btn-primary" onclick="document.getElementById('compress-file-input').click()">
+                    <i class="fas fa-folder-open"></i> Select Image
+                </button>
+            `;
+            compressBtn.disabled = true;
+            compressResultDiv.innerHTML = '';
+            compressFileInfo.innerHTML = '';
+        }
+        
+        // Simulate compression process
+        compressBtn.addEventListener('click', () => {
+            if (!compressSelectedFile) return;
+            
+            compressBtn.disabled = true;
+            compressBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compressing...';
+            
+            setTimeout(() => {
+                showCompressResult();
+            }, 1500);
+        });
+        
+        function showCompressResult() {
+            compressBtn.disabled = false;
+            compressBtn.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Compress Image';
+            
+            const quality = compressQualityInput.value;
+            const keepMetadata = document.getElementById('keep-metadata').checked;
+            
+            // Calculate simulated compressed size (random reduction between 30-80%)
+            const originalSize = compressSelectedFile.size;
+            const reduction = 0.3 + Math.random() * 0.5; // 30-80% reduction
+            const compressedSize = originalSize * (1 - reduction);
+            
+            compressResultDiv.innerHTML = `
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border: 1px solid #bbf7d0;">
+                    <i class="fas fa-check-circle fa-2x" style="color: var(--secondary);"></i>
+                    <h3>Compression Complete!</h3>
+                    <p>Original Size: ${(originalSize / 1024).toFixed(2)} KB</p>
+                    <p>Compressed Size: ${(compressedSize / 1024).toFixed(2)} KB (${(reduction * 100).toFixed(0)}% reduction)</p>
+                    <p>Quality: ${quality}%</p>
+                    <p>Metadata: ${keepMetadata ? 'Preserved' : 'Removed'}</p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-download"></i> Download Compressed Image
+                    </button>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
